@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ ~  Copyright (c) 2016, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ ~
+ ~  WSO2 Inc. licenses this file to you under the Apache License,
+ ~  Version 2.0 (the "License"); you may not use this file except
+ ~  in compliance with the License.
+ ~  You may obtain a copy of the License at
+ ~
+ ~    http://www.apache.org/licenses/LICENSE-2.0
+ ~
+ ~  Unless required by applicable law or agreed to in writing,
+ ~  software distributed under the License is distributed on an
+ ~  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ ~  KIND, either express or implied.  See the License for the
+ ~  specific language governing permissions and limitations
+ ~  under the License.
+-->
+<template name="sendInvoice" xmlns="http://ws.apache.org/ns/synapse">
+    <parameter name="recipients" description="The list of mail id of the recipients."/>
+    <parameter name="invoiceId" description="The ID of the invoice."/>
+    <parameter name="subject" description="The subject of the mail."/>
+    <parameter name="message" description="The message for the mail."/>
+    <parameter name="allowPayment" description="The number of the allow payments."/>
+    <sequence>
+        <property name="uri.var.recipients" expression="$func:recipients"/>
+        <property name="uri.var.invoiceId" expression="$func:invoiceId"/>
+        <property name="uri.var.subject" expression="$func:subject"/>
+        <property name="uri.var.message" expression="$func:message"/>
+        <property name="uri.var.allowPayment" expression="$func:allowPayment"/>
+        <payloadFactory media-type="json">
+            <format>
+                {
+                "recipients":$1
+                }
+            </format>
+            <args>
+                <arg expression="$ctx:uri.var.recipients"/>
+            </args>
+        </payloadFactory>
+        <script language="js">
+            <![CDATA[
+                var subject = mc.getProperty('uri.var.subject');
+                var message = mc.getProperty('uri.var.message');
+                var allowPayment = mc.getProperty('uri.var.allowPayment');
+                var payload = mc.getPayloadJSON();
+
+                if (subject != null && subject != "") {
+                    payload.subject = subject;
+                }
+                if (message != null && message != "") {
+                    payload.message = message;
+                }
+                if (allowPayment != null && allowPayment != "") {
+                    payload.allow_payments = allowPayment;
+                }
+                mc.setPayloadJSON(payload);
+            ]]>
+        </script>
+        <property name="messageType" value="application/json" scope="axis2"/>
+        <header name="X-Angie-AuthApiToken" expression="$ctx:uri.var.activeCollabToken" scope="transport"/>
+        <filter source="$ctx:activecollabBlocking" regex="true">
+            <then>
+                <call blocking="true">
+                    <endpoint>
+                        <http method="PUT"
+                              uri-template="{uri.var.apiUrl}/api/{uri.var.apiVersion}/invoices/{uri.var.invoiceId}/send"/>
+                    </endpoint>
+                </call>
+            </then>
+            <else>
+                <call>
+                    <endpoint>
+                        <http method="PUT"
+                              uri-template="{uri.var.apiUrl}/api/{uri.var.apiVersion}/invoices/{uri.var.invoiceId}/send"/>
+                    </endpoint>
+                </call>
+            </else>
+        </filter>
+    </sequence>
+</template>

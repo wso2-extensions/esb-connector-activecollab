@@ -1,6 +1,0 @@
-{
-  "apiUrl": "%s(apiUrl)",
-  "apiToken": "%s(apiToken)",
-  "format": "json",
-  "projectId": "%s(projectId)"
-}

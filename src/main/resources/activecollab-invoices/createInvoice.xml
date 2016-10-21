@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ ~  Copyright (c) 2016, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ ~
+ ~  WSO2 Inc. licenses this file to you under the Apache License,
+ ~  Version 2.0 (the "License"); you may not use this file except
+ ~  in compliance with the License.
+ ~  You may obtain a copy of the License at
+ ~
+ ~    http://www.apache.org/licenses/LICENSE-2.0
+ ~
+ ~  Unless required by applicable law or agreed to in writing,
+ ~  software distributed under the License is distributed on an
+ ~  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ ~  KIND, either express or implied.  See the License for the
+ ~  specific language governing permissions and limitations
+ ~  under the License.
+-->
+<template name="createInvoice" xmlns="http://ws.apache.org/ns/synapse">
+    <parameter name="number" description="The number of the invoice."/>
+    <parameter name="companyId" description="The ID of the company."/>
+    <parameter name="items" description="The list of the items that are included in the invoice."/>
+    <parameter name="address" description="The address of the company."/>
+    <parameter name="note" description="The private note for an invoice."/>
+    <sequence>
+        <property name="uri.var.number" expression="$func:number"/>
+        <property name="uri.var.companyId" expression="$func:companyId"/>
+        <property name="uri.var.items" expression="$func:items"/>
+        <property name="uri.var.address" expression="$func:address"/>
+        <property name="uri.var.note" expression="$func:note"/>
+        <payloadFactory media-type="json">
+            <format>
+                {
+                "company_id":$1,
+                "number":"$2",
+                "company_address":"$3"
+                }
+            </format>
+            <args>
+                <arg expression="$ctx:uri.var.companyId"/>
+                <arg expression="$ctx:uri.var.number"/>
+                <arg expression="$ctx:uri.var.address"/>
+            </args>
+        </payloadFactory>
+        <script language="js">
+            <![CDATA[
+                var note = mc.getProperty('uri.var.note');
+                var items = mc.getProperty('uri.var.items');
+                var payload = mc.getPayloadJSON();
+
+                if (note != null && note != "") {
+                    payload.private_note=note;
+                }
+                if (items != null && items != "" && items!="[]") {
+                    payload.items=eval( "(" + items + ")" );
+                }
+                mc.setPayloadJSON(payload);
+            ]]>
+        </script>
+        <property name="messageType" value="application/json" scope="axis2"/>
+        <header name="X-Angie-AuthApiToken" expression="$ctx:uri.var.activeCollabToken" scope="transport"/>
+        <filter source="$ctx:activecollabBlocking" regex="true">
+            <then>
+                <call blocking="true">
+                    <endpoint>
+                        <http method="POST" uri-template="{uri.var.apiUrl}/api/{uri.var.apiVersion}/invoices"/>
+                    </endpoint>
+                </call>
+            </then>
+            <else>
+                <call>
+                    <endpoint>
+                        <http method="POST" uri-template="{uri.var.apiUrl}/api/{uri.var.apiVersion}/invoices"/>
+                    </endpoint>
+                </call>
+            </else>
+        </filter>
+    </sequence>
+</template>

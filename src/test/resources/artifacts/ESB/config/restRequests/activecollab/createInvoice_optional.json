@@ -1,0 +1,31 @@
+{
+  "email": "%s(email)",
+  "password": "%s(password)",
+  "apiVersion": "%s(apiVersion)",
+  "clientVendor": "%s(clientVendor)",
+  "clientName": "%s(clientName)",
+  "blocking": "%s(blocking)",
+  "companyId": "%s(companyId)",
+  "number": "%s(numberOpt)",
+  "address": "%s(address)",
+  "note": "%s(note)",
+  "items": [
+    {
+      "description": "First item",
+      "quantity": 100,
+      "unit_cost": 25,
+      "discount_rate": 100
+    },
+    {
+      "description": "Second item",
+      "quantity": 250,
+      "unit_cost": 13,
+      "first_tax_rate_id": 1
+    },
+    {
+      "description": "Third item",
+      "quantity": 15,
+      "unit_cost": 25
+    }
+  ]
+}

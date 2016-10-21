@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ ~  Copyright (c) 2016, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ ~
+ ~  WSO2 Inc. licenses this file to you under the Apache License,
+ ~  Version 2.0 (the "License"); you may not use this file except
+ ~  in compliance with the License.
+ ~  You may obtain a copy of the License at
+ ~
+ ~    http://www.apache.org/licenses/LICENSE-2.0
+ ~
+ ~  Unless required by applicable law or agreed to in writing,
+ ~  software distributed under the License is distributed on an
+ ~  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ ~  KIND, either express or implied.  See the License for the
+ ~  specific language governing permissions and limitations
+ ~  under the License.
+-->
+<template name="createUser" xmlns="http://ws.apache.org/ns/synapse">
+    <parameter name="type" description="The user type."/>
+    <parameter name="userEmail" description="The email address of the user."/>
+    <parameter name="userPassword" description="The password for the user."/>
+    <parameter name="companyId" description="The ID of the company."/>
+    <parameter name="customPermissions" description="The list of the permissions for the user."/>
+    <sequence>
+        <property name="uri.var.type" expression="$func:type"/>
+        <property name="uri.var.userEmail" expression="$func:userEmail"/>
+        <property name="uri.var.userPassword" expression="$func:userPassword"/>
+        <property name="uri.var.companyId" expression="$func:companyId"/>
+        <property name="uri.var.customPermissions" expression="$func:customPermissions"/>
+        <payloadFactory media-type="json">
+            <format>
+                {
+                "type":"$1",
+                "email":"$2"
+                }
+            </format>
+            <args>
+                <arg expression="$ctx:uri.var.type"/>
+                <arg expression="$ctx:uri.var.userEmail"/>
+            </args>
+        </payloadFactory>
+        <script language="js">
+            <![CDATA[
+                var userPassword = mc.getProperty('uri.var.userPassword');
+                var companyId = mc.getProperty('uri.var.companyId');
+                var customPermissions = mc.getProperty('uri.var.customPermissions');
+                var payload = mc.getPayloadJSON();
+
+                if (userPassword != null && userPassword != "") {
+                    payload.password = userPassword;
+                }
+                if (companyId != null && companyId != "") {
+                    payload.company_id = companyId;
+                }
+                if (customPermissions != null && customPermissions != "" && customPermissions!="[]") {
+                    payload.custom_permissions = eval( "(" + customPermissions + ")" );
+                }
+                mc.setPayloadJSON(payload);
+            ]]>
+        </script>
+        <property name="messageType" value="application/json" scope="axis2"/>
+        <header name="X-Angie-AuthApiToken" expression="$ctx:uri.var.activeCollabToken" scope="transport"/>
+        <filter source="$ctx:activecollabBlocking" regex="true">
+            <then>
+                <call blocking="true">
+                    <endpoint>
+                        <http method="POST" uri-template="{uri.var.apiUrl}/api/{uri.var.apiVersion}/users"/>
+                    </endpoint>
+                </call>
+            </then>
+            <else>
+                <call>
+                    <endpoint>
+                        <http method="POST" uri-template="{uri.var.apiUrl}/api/{uri.var.apiVersion}/users"/>
+                    </endpoint>
+                </call>
+            </else>
+        </filter>
+    </sequence>
+</template>

@@ -19,12 +19,14 @@
 <connector>
     <component name="activecollab" package="org.wso2.carbon.connector">
         <dependency component="activecollab-config"/>
-        <dependency component="activecollab-discussion"/>
-        <dependency component="activecollab-people"/>
         <dependency component="activecollab-projects"/>
-        <dependency component="activecollab-task"/>
-        <dependency component="activecollab-context"/>
+        <dependency component="activecollab-categories"/>
+        <dependency component="activecollab-companies"/>
+        <dependency component="activecollab-invoices"/>
+        <dependency component="activecollab-people"/>
+        <dependency component="activecollab-tasks"/>
         <description>activecollab connector libraries</description>
     </component>
     <icon>icon/icon-small.gif</icon>
 </connector>
+

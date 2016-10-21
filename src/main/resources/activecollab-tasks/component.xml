@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ ~  Copyright (c) 2016, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ ~
+ ~  WSO2 Inc. licenses this file to you under the Apache License,
+ ~  Version 2.0 (the "License"); you may not use this file except
+ ~  in compliance with the License.
+ ~  You may obtain a copy of the License at
+ ~
+ ~    http://www.apache.org/licenses/LICENSE-2.0
+ ~
+ ~  Unless required by applicable law or agreed to in writing,
+ ~  software distributed under the License is distributed on an
+ ~  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ ~  KIND, either express or implied.  See the License for the
+ ~  specific language governing permissions and limitations
+ ~  under the License.
+-->
+<component name="activecollab-tasks" type="synapse/template">
+    <subComponents>
+        <component name="getTask">
+            <file>getTask.xml</file>
+            <description>Get a task.</description>
+        </component>
+        <component name="listTasks">
+            <file>listTasks.xml</file>
+            <description>List all the tasks.</description>
+        </component>
+        <component name="createTask">
+            <file>createTask.xml</file>
+            <description>Create a new task.</description>
+        </component>
+        <component name="assignTask">
+            <file>assignTask.xml</file>
+            <description>Assign the task to the member.</description>
+        </component>
+        <component name="completeTask">
+            <file>completeTask.xml</file>
+            <description>Complete a task.</description>
+        </component>
+        <component name="getCompletedTasks">
+            <file>getCompletedTasks.xml</file>
+            <description>Get all completed tasks.</description>
+        </component>
+        <component name="reopenTask">
+            <file>reopenTask.xml</file>
+            <description>Reopen the task.</description>
+        </component>
+        <component name="deleteTask">
+            <file>deleteTask.xml</file>
+            <description>Delete an existing task.</description>
+        </component>
+        <component name="createSubTask">
+            <file>createSubTask.xml</file>
+            <description>Create new sub task.</description>
+        </component>
+        <component name="promoteSubTaskToTask">
+            <file>promoteSubTaskToTask.xml</file>
+            <description>Promote a sub task as task.</description>
+        </component>
+        <component name="renameTask">
+            <file>renameTask.xml</file>
+            <description>Rename an existing task.</description>
+        </component>
+    </subComponents>
+</component>
+
