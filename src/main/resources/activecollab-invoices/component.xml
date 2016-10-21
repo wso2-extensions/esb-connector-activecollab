@@ -20,7 +20,7 @@
     <subComponents>
         <component name="getInvoice">
             <file>getInvoice.xml</file>
-            <description>Get a invoice.</description>
+            <description>Get an invoice.</description>
         </component>
         <component name="listInvoices">
             <file>listInvoices.xml</file>
