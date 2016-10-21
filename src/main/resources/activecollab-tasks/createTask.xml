@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ ~  Copyright (c) 2016, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ ~
+ ~  WSO2 Inc. licenses this file to you under the Apache License,
+ ~  Version 2.0 (the "License"); you may not use this file except
+ ~  in compliance with the License.
+ ~  You may obtain a copy of the License at
+ ~
+ ~    http://www.apache.org/licenses/LICENSE-2.0
+ ~
+ ~  Unless required by applicable law or agreed to in writing,
+ ~  software distributed under the License is distributed on an
+ ~  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ ~  KIND, either express or implied.  See the License for the
+ ~  specific language governing permissions and limitations
+ ~  under the License.
+-->
+<template name="createTask" xmlns="http://ws.apache.org/ns/synapse">
+    <parameter name="projectId" description="The ID of the project."/>
+    <parameter name="name" description="The name of the task."/>
+    <parameter name="assigneeId" description="The ID of the assignee for the task."/>
+    <parameter name="isImportant" description="Boolean value whether this task is important ot not"/>
+    <parameter name="jobTypeId" description="The ID of the job type."/>
+    <parameter name="estimate" description="The estimate value of a task and it can be provided in decimal format (8.5)
+    or in HH:MM format (8:30)."/>
+    <sequence>
+        <property name="uri.var.projectId" expression="$func:projectId"/>
+        <property name="uri.var.name" expression="$func:name"/>
+        <property name="uri.var.assigneeId" expression="$func:assigneeId"/>
+        <property name="uri.var.isImportant" expression="$func:isImportant"/>
+        <property name="uri.var.jobTypeId" expression="$func:jobTypeId"/>
+        <property name="uri.var.estimate" expression="$func:estimate"/>
+        <payloadFactory media-type="json">
+            <format>
+                {
+                "name":"$1"
+                }
+            </format>
+            <args>
+                <arg expression="$ctx:uri.var.name"/>
+            </args>
+        </payloadFactory>
+        <script language="js">
+            <![CDATA[
+                var assigneeId = mc.getProperty('uri.var.assigneeId');
+                var isImportant = mc.getProperty('uri.var.isImportant');
+                var estimate = mc.getProperty('uri.var.estimate');
+                var jobTypeId = mc.getProperty('uri.var.jobTypeId');
+                var payload = mc.getPayloadJSON();
+
+                if (assigneeId != null && assigneeId != "") {
+                    payload.assignee_id = assigneeId;
+                }
+                if (isImportant != null && isImportant != "") {
+                    payload.is_important = isImportant;
+                }
+                if (jobTypeId != null && jobTypeId != "") {
+                    payload.job_type_id = jobTypeId;
+                }
+                if (estimate != null && estimate != "") {
+                    payload.estimate = estimate;
+                }
+                mc.setPayloadJSON(payload);
+            ]]>
+        </script>
+        <property name="messageType" value="application/json" scope="axis2"/>
+        <header name="X-Angie-AuthApiToken" expression="$ctx:uri.var.activeCollabToken" scope="transport"/>
+        <filter source="$ctx:activecollabBlocking" regex="true">
+            <then>
+                <call blocking="true">
+                    <endpoint>
+                        <http method="POST"
+                              uri-template="{uri.var.apiUrl}/api/{uri.var.apiVersion}/projects/{uri.var.projectId}/tasks"/>
+                    </endpoint>
+                </call>
+            </then>
+            <else>
+                <call>
+                    <endpoint>
+                        <http method="POST"
+                              uri-template="{uri.var.apiUrl}/api/{uri.var.apiVersion}/projects/{uri.var.projectId}/tasks"/>
+                    </endpoint>
+                </call>
+            </else>
+        </filter>
+    </sequence>
+</template>

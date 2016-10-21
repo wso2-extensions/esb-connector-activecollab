@@ -1,9 +1,0 @@
-{
-  "apiUrl": "%s(apiUrl)",
-  "apiToken": "%s(apiToken)",
-  "format": "json",
-  "companyId": "%s(companyId)",
-  "email": "%s(emailMandatory)",
-  "password": "%s(password)",
-  "passwordRepeat": "%s(password)"
-}

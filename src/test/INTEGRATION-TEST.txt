@@ -1,81 +1,64 @@
-Product: Integration tests for WSO2 ESB ActiveCollab connector
+Product: WSO2 ESB Connector for ActiveCollab + Integration Tests
 
    Pre-requisites:
 
-    - Maven 3.x
-    - Java 1.6 or above
+	- Maven 3.x
+	- Java 1.6 or above
 	- The org.wso2.esb.integration.integration-base project is required. The test suite has been configured to download this project automatically. If the automatic download fails, download the following project and compile it using the mvn clean install command to update your local repository:
-      https://github.com/wso2-extensions/esb-integration-base
+	  https://github.com/wso2-extensions/esb-integration-base
 
-    Tested Platforms: 
+	Tested Platforms:
 
-    - Microsoft WINDOWS V-7
-    - Ubuntu 14.04, Mac OSx 10.9
-    - WSO2 ESB 4.9.0 
+	- Ubuntu 14.04,
+	- WSO2 ESB 5.0.0
  
 Steps to follow in setting integration test.
- 1.  Download ESB 4.9.0  from official website.Navigate to location "<ESB_HOME>/repository/conf/axis2" and add/uncomment following lines in "axis2.xml".
-	
-	Message Formatters :-
-		
-	<messageFormatter contentType="application/json"
-							  class="org.apache.synapse.commons.json.JsonStreamFormatter"/>
-							  
-	<messageFormatter contentType="text/html"                             
-					  class="org.wso2.carbon.relay.ExpandingMessageFormatter"/>
-					  
-	<messageBuilder contentType="application/json"
-					  class="org.apache.synapse.commons.json.JsonStreamBuilder"/>
+ 1.  Download ESB 5.0.0 from official website and extract the ESB and add "-XX:-UseSplitVerifier" under $JVM_MEM_OPTS into {ESB_HOME}/bin/wso2server.sh.
 
-	<messageBuilder contentType="text/html"                                
-					  class="org.wso2.carbon.relay.BinaryRelayBuilder"/>
-	
  2. Compress modified ESB and copy that zip file in to location "{Activecollab_CONNECTOR_HOME}/repository/".
 	
- 3. Create an activecollab trial account and derive the API key:
-	i) 	 Using the URL "https://www.activecollab.com/" create a Free Trial account for activecollab version 4.
-	ii)  Login to the created activecollab account and derive the API Key by selecting the user account that has been created >> Click on Options >> Select API Subscription >> Create a new Subscription (make sure that the 'Read Only' radio button is set as 'No') >> click the API subscription details icon and get the API URL and the api token. 
-	iii) Add a project Role by following the below steps
-		 a)Select Administration and click on Administration.
-		 b)Under Projects select 'Project Roles'.
-		 c)Click on New Role and enter a name for the role >> select the appropriate permissions and click 'Add Role'
-		 
-    iv)  Create at least two users and keep the user ids for further reference.
-	
+ 3. Create an activecollab trial account:
+	i) Use the URL "https://www.activecollab.com/" to create a Free Trial account for activecollab version 5. For that you need to pass the "Your Name or Organization, Email, Password" and keep the those value for further reference.
+
  4. Update the activecollab properties file at location "{Activecollab_CONNECTOR_HOME}/src/test/resources/artifacts/ESB/connector/config" as below.
 	
-	i) 		apiUrl - Use the API URL that is obtained under step 3 ii).
-	ii) 	apiToken - API token that is obtained under Step 3 ii).
-	iii) 	companyId - Use a valid company ID.
-	iv) 	projectNameMandatory - Use a valid string as the project name.
-	v) 		projectNameOptional - Use a valid string as the project name.
-	vi)     emailMandatory - Use a valid email address.
-	vii) 	emailOptional - Use a valid email address.
-	viii) 	password - Use a valid string as the password.
-	ix)		firstName - Use a valid string as the first name of the user.
-	x)		lastName - Use a valid string as the last name of the user. 
-	xi)		userType - Use 'Client'.
-	xii)	taskName - Use a valid string as the task name.
-	xiii)	taskDesc - Use a valid string as the task description.
-	xiv)	taskVisibility - Use '1' or '0'.
-	xv)		taskPriority - Use a priority value that can have one of five integer values, ranging from -2. 
-	xvi)	updatedTaskName - Use a valid string as a new name for the task to be updated.
-	xvii)	updatedTaskDesc - Use a valid string as a new description for the task to be updated.
-	xviii)	milestoneName - Use a valid string as the milestone name.
-	xix)	milestoneNameOptional - Use a valid string as the milestone name.
-	xx)		startOn - Use a valid date in the format of YYYY-MM-DD.
-	xxi)	assignUserIdMandatory - Use a valid user Id that is created in Step 3 iv).
-	xxii)	assignUserIdOptional - Use a valid user Id that is created in Step 3 iv).
-	xxiii)	discussionName - Use a valid string as the name of the discussion.
-	xxiv)	discussionBody - Use a valid string as the description of the discussion.
-	xxv)    discussionVisibility - Use either 0 or 1 (0 marks private and 1 stands for normal visibility). 
+	i)      apiVersion              - The version of the ActiveCollab API.
+	ii)     email                   - The Email ID of the user who creates an account.
+	iii)    password                - The password of an ActiveCollab account.
+	iv)     clientVendor            - The name of the instance that is the value of "your Name or Organization" while
+	                                  creating account.
+	v)      clientName              - The name of the client, it can be any string.
+	vi)     CategoryName            - Use a valid string as the category name to create new category.
+	vii)    newCategoryName         - Use a valid string to rename an existing category which is not same as
+	                                  step 4 vii).
+	viii)   companyName             - Use a valid string as the company name to create new company.
+	ix)     address                 - Use a valid string as the address of the company.
+	x)      number                  - Use a valid string as the number of an invoice.
+	xi)     numberOpt               - Use a valid string as the number of another invoice which is not same as
+	                                  step 4 xi).
+	xii)    note                    - Use a valid string as note of an invoice.
+	xiii)   recipients              - The list of recipients and this must be string array
+	                                  (E.g ["email01","email02"]).
+	xiv)    userEmail               - Use a valid email address to create user.
+	xv)     userEmailOpt            - Use a valid another email address to create user.
+	xvi)    type                    - The type of the user.
+	xvii)   userPassword            - Use a valid string as password of an user.
+	xviii)  projectName             - Use a valid string as the project name to create new project.
+	xix)    projectNameOpt          - Use a valid string as the project name to create another project which is not
+	                                  same as step 4 xx).
+	xx)     newProjectName          - Use a valid string to rename an existing project which is not same as
+	                                  step 4 xix) and xx).
+	xxi)    taskName                - Use a valid string as the task name to create new task.
+	xxii)   taskNameOpt             - Use a valid string as the name to create another task which is not same as
+	                                  step 4 xxii).
+	xxiii)  newTaskName             - Use a valid string to rename an existing task which is not same as
+	                                  step 4 xxii) and xxiii).
+	xxiv)   subTaskName             - Use a valid string as the sub task name to create new sub task.
+	xxv)    subject                 - Use a valid string as a subject for sending invoice.
+	xxvi)   message                 - Use a valid string as a message body for sending invoice.
 
-	Properties vi) and vii) needs to be changed before running the integration test each time.
+	Properties vi),vii),viii),x),xi),xiv),xv),xvii),xviii),xix),xx),xxi),xxii),xxiii) and xxiv) need to be changed before running the integration test each time.
 
  5. Navigate to "<Activecollab_CONNECTOR_HOME>" and run the following command.
-     $ mvn clean install
-
- NOTE :
-      -activecollab V4 account is needed to execute the tests.
-	  -activecollab Free trial account is only valid for 30 days.
+	 $ mvn clean install
 	  

@@ -17,30 +17,110 @@
  ~  under the License.
 -->
 <template name="init" xmlns="http://ws.apache.org/ns/synapse">
-    <parameter name="apiUrl"
-               description="The url to access the ActiveCollab API."/>
-    <parameter name="apiToken"
-               description="The api token of the account."/>
-    <parameter name="format"
-               description="The format that the reponse is expected to be."/>
+    <parameter name="apiUrl" description="The url to access the ActiveCollab API."/>
+    <parameter name="apiVersion" description="The version of the ActiveCollab API."/>
+    <parameter name="intent" description="The intent for the token."/>
+    <parameter name="clientVendor" description="The name of the instance."/>
+    <parameter name="clientName" description="The name of the client."/>
+    <parameter name="email" description="The Email ID of the user."/>
+    <parameter name="password" description="The password of an ActiveCollab account."/>
+    <parameter name="email" description="The Email ID of the user."/>
+    <parameter name="password" description="The password of an ActiveCollab account."/>
+    <parameter name="blocking"
+               description="The blocking parameter is helping connector performs the blocking invocations to
+               ActiveCollab."/>
     <sequence>
         <property name="uri.var.apiUrl" expression="$func:apiUrl"/>
-        <property name="uri.var.apiToken" expression="$func:apiToken"/>
-        <property name="uri.var.format" expression="$func:format"/>
-        <property name="uri.var.hostHeader" value=""/>
-        <!-- Setting up the REQUEST_HOST_HEADER property according to the api URL  -->
-        <property name="uri.var.hostHeader" expression="fn:substring-after(get-property('uri.var.apiUrl'),'https://')"/>
-        <property name="REQUEST_HOST_HEADER" expression="fn:concat(get-property('uri.var.hostHeader'),':443')"
-                  scope="axis2"/>
-        <property name="uri.var.apiUrl"
-                  expression="fn:concat(get-property('uri.var.apiUrl'), '/api.php?', 'auth_api_token=',
-						get-property('uri.var.apiToken'), '&amp;')"/>
-        <filter source="boolean(get-property('uri.var.format'))" regex="true">
+        <property name="uri.var.apiVersion" expression="$func:apiVersion"/>
+        <property name="uri.var.intent" expression="$func:intent"/>
+        <property name="uri.var.clientVendor" expression="$func:clientVendor"/>
+        <property name="uri.var.clientName" expression="$func:clientName"/>
+        <property name="uri.var.email" expression="$func:email"/>
+        <property name="uri.var.password" expression="$func:password"/>
+        <property name="activecollabBlocking" expression="$func:blocking"/>
+        <filter source="boolean($ctx:uri.var.apiVersion)" regex="false">
             <then>
-                <property name="uri.var.apiUrl"
-                          expression="fn:concat(get-property('uri.var.apiUrl'), 'format=',
-								get-property('uri.var.format'), '&amp;')"/>
+                <property name="uri.var.apiVersion" value="v1"/>
             </then>
         </filter>
+        <enrich>
+            <source clone="true" type="body"/>
+            <target property="ORIGINAL_MSG_PAYLOAD" type="property"/>
+        </enrich>
+        <filter source="boolean($ctx:uri.var.activeCollabToken)" regex="false">
+            <then>
+                <payloadFactory media-type="json">
+                    <format>
+                        {
+                        "email":"$1",
+                        "password":"$2"
+                        }
+                    </format>
+                    <args>
+                        <arg expression="$ctx:uri.var.email"/>
+                        <arg expression="$ctx:uri.var.password"/>
+                    </args>
+                </payloadFactory>
+                <filter source="$ctx:activecollabBlocking" regex="true">
+                    <then>
+                        <call blocking="true">
+                            <endpoint>
+                                <http method="POST"
+                                      uri-template="https://my.activecollab.com/api/{uri.var.apiVersion}/external/login"/>
+                            </endpoint>
+                        </call>
+                    </then>
+                    <else>
+                        <call>
+                            <endpoint>
+                                <http method="POST"
+                                      uri-template="https://my.activecollab.com/api/{uri.var.apiVersion}/external/login"/>
+                            </endpoint>
+                        </call>
+                    </else>
+                </filter>
+                <property name="uri.var.intent" expression="json-eval($.user.intent)"/>
+                <property name="uri.var.apiUrl" expression="json-eval($.accounts[0].url)"/>
+                <payloadFactory media-type="json">
+                    <format>
+                        {
+                        "intent":"$1",
+                        "client_vendor":"$2",
+                        "client_name":"$3"
+                        }
+                    </format>
+                    <args>
+                        <arg expression="$ctx:uri.var.intent"/>
+                        <arg expression="$ctx:uri.var.clientVendor"/>
+                        <arg expression="$ctx:uri.var.clientName"/>
+                    </args>
+                </payloadFactory>
+                <filter source="$ctx:activecollabBlocking" regex="true">
+                    <then>
+                        <call blocking="true">
+                            <endpoint>
+                                <http method="POST"
+                                      uri-template="{uri.var.apiUrl}/api/{uri.var.apiVersion}/issue-token-intent"/>
+                            </endpoint>
+                        </call>
+                    </then>
+                    <else>
+                        <call>
+                            <endpoint>
+                                <http method="POST"
+                                      uri-template="{uri.var.apiUrl}/api/{uri.var.apiVersion}/issue-token-intent"/>
+                            </endpoint>
+                        </call>
+                    </else>
+                </filter>
+                <property name="uri.var.activeCollabToken" expression="json-eval($.token)"/>
+                <header name="X-Angie-AuthApiToken" expression="$ctx:uri.var.activeCollabToken" scope="transport"/>
+            </then>
+            <else/>
+        </filter>
+        <enrich>
+            <source clone="true" property="ORIGINAL_MSG_PAYLOAD" type="property"/>
+            <target type="body"/>
+        </enrich>
     </sequence>
 </template>

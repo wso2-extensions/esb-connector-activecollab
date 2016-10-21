@@ -17,24 +17,23 @@
  ~  under the License.
 -->
 <template name="listProjects" xmlns="http://ws.apache.org/ns/synapse">
-    <parameter name="isArchived"
-               description="If set to true, only the archived projects will be retrieved."/>
     <sequence>
-        <property name="uri.var.isArchived" expression="$func:isArchived"/>
-        <property name="uri.var.functionRemainder" value=""/>
-        <filter source="get-property('uri.var.isArchived')" regex="true">
+        <header name="X-Angie-AuthApiToken" expression="$ctx:uri.var.activeCollabToken" scope="transport"/>
+        <filter source="$ctx:activecollabBlocking" regex="true">
             <then>
-                <property name="uri.var.functionRemainder" value="/archive"/>
+                <call blocking="true">
+                    <endpoint>
+                        <http method="GET" uri-template="{uri.var.apiUrl}/api/{uri.var.apiVersion}/projects"/>
+                    </endpoint>
+                </call>
             </then>
+            <else>
+                <call>
+                    <endpoint>
+                        <http method="GET" uri-template="{uri.var.apiUrl}/api/{uri.var.apiVersion}/projects"/>
+                    </endpoint>
+                </call>
+            </else>
         </filter>
-        <call>
-            <endpoint>
-                <http method="get" uri-template="{uri.var.apiUrl}path_info=projects{+uri.var.functionRemainder}"/>
-            </endpoint>
-        </call>
-        <!-- Remove response custom header information -->
-        <header name="X-XSS-Protection" scope="transport" action="remove"/>
-        <header name="X-Powered-By" scope="transport" action="remove"/>
-        <header name="X-Content-Type-Options" scope="transport" action="remove"/>
     </sequence>
 </template>

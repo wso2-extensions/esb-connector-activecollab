@@ -18,13 +18,29 @@
 -->
 <component name="activecollab-people" type="synapse/template">
     <subComponents>
-        <component name="createClient">
-            <file>createClient.xml</file>
-            <description>Adding a User to a company</description>
+        <component name="getUser">
+            <file>getUser.xml</file>
+            <description>Get an existing user.</description>
         </component>
-        <component name="listCompanies">
-            <file>listCompanies.xml</file>
-            <description>List all active Companies</description>
+        <component name="createUser">
+            <file>createUser.xml</file>
+            <description>Create a new user.</description>
+        </component>
+        <component name="listUsers">
+            <file>listUsers.xml</file>
+            <description>List all users.</description>
+        </component>
+        <component name="getAllUsers">
+            <file>getAllUsers.xml</file>
+            <description>List all users including archived and trashed.</description>
+        </component>
+        <component name="deleteUser">
+            <file>deleteUser.xml</file>
+            <description>Delete an existing user.</description>
+        </component>
+        <component name="reactivateUser">
+            <file>reactivateUser.xml</file>
+            <description>Reactive an user.</description>
         </component>
     </subComponents>
 </component>
