@@ -41,7 +41,7 @@ public class ActiveCollabConnectorIntegrationTest extends ConnectorIntegrationTe
 	@BeforeClass(alwaysRun = true)
 	public void setEnvironment() throws Exception {
 
-		init("activecollab-connector-2.0.1");
+		init("activecollab-connector-2.0.2-SNAPSHOT");
 
 		esbRequestHeadersMap.put("Content-Type", "application/json");
 		apiRequestHeadersMap.put("Content-Type", "application/json");
