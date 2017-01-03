@@ -32,24 +32,22 @@
             <format>
                 {
                 "type":"$1",
-                "email":"$2"
+                "email":"$2",
+                "password":"$3"
                 }
             </format>
             <args>
                 <arg expression="$ctx:uri.var.type"/>
                 <arg expression="$ctx:uri.var.userEmail"/>
+                <arg expression="$ctx:uri.var.userPassword"/>
             </args>
         </payloadFactory>
         <script language="js">
             <![CDATA[
-                var userPassword = mc.getProperty('uri.var.userPassword');
                 var companyId = mc.getProperty('uri.var.companyId');
                 var customPermissions = mc.getProperty('uri.var.customPermissions');
                 var payload = mc.getPayloadJSON();
 
-                if (userPassword != null && userPassword != "") {
-                    payload.password = userPassword;
-                }
                 if (companyId != null && companyId != "") {
                     payload.company_id = companyId;
                 }

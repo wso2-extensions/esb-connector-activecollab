@@ -17,13 +17,6 @@
  */
 package org.wso2.carbon.connector.integration.test.activecollab;
 
-import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.testng.Assert;
@@ -31,6 +24,10 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import org.wso2.connector.integration.test.base.ConnectorIntegrationTestBase;
 import org.wso2.connector.integration.test.base.RestResponse;
+
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 public class ActiveCollabConnectorIntegrationTest extends ConnectorIntegrationTestBase {
 
@@ -44,7 +41,7 @@ public class ActiveCollabConnectorIntegrationTest extends ConnectorIntegrationTe
 	@BeforeClass(alwaysRun = true)
 	public void setEnvironment() throws Exception {
 
-		init("activecollab-connector-2.0.1-SNAPSHOT");
+		init("activecollab-connector-2.0.1");
 
 		esbRequestHeadersMap.put("Content-Type", "application/json");
 		apiRequestHeadersMap.put("Content-Type", "application/json");

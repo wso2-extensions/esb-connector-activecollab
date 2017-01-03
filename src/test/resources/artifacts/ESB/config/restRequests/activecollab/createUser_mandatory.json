@@ -6,5 +6,6 @@
   "clientName": "%s(clientName)",
   "blocking": "%s(blocking)",
   "type": "%s(type)",
-  "userEmail": "%s(userEmail)"
+  "userEmail": "%s(userEmail)",
+  "userPassword": "%s(userPassword)"
 }
