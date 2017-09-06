@@ -24,7 +24,6 @@
     <parameter name="clientName" description="The name of the client."/>
     <parameter name="email" description="The Email ID of the user."/>
     <parameter name="password" description="The password of an ActiveCollab account."/>
-    <parameter name="email" description="The Email ID of the user."/>
     <parameter name="password" description="The password of an ActiveCollab account."/>
     <parameter name="blocking"
                description="The blocking parameter is helping connector performs the blocking invocations to
