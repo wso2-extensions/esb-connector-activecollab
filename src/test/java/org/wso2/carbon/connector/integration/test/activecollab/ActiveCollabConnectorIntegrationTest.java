@@ -29,6 +29,9 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Integration test class for ActiveCollab connector
+ */
 public class ActiveCollabConnectorIntegrationTest extends ConnectorIntegrationTestBase {
 
 	private Map<String, String> esbRequestHeadersMap = new HashMap<String, String>();
@@ -47,7 +50,8 @@ public class ActiveCollabConnectorIntegrationTest extends ConnectorIntegrationTe
 		apiRequestHeadersMap.put("Content-Type", "application/json");
 
 		String apiEndPointForGetIntent = "https://my.activecollab.com/api/" +
-		                                 connectorProperties.getProperty("apiVersion") + "/external/login";
+		                                 connectorProperties.getProperty("apiVersion") +
+		                                 "/external/login";
 		RestResponse<JSONObject> apiRestResponseFromGetIntent =
 				sendJsonRestRequest(apiEndPointForGetIntent, "POST", apiRequestHeadersMap, "getIntent_mandatory.json");
 		String intent = apiRestResponseFromGetIntent.getBody().getJSONObject("user").getString("intent");
@@ -57,7 +61,8 @@ public class ActiveCollabConnectorIntegrationTest extends ConnectorIntegrationTe
 		connectorProperties.setProperty("apiUrl", apiUrl);
 
 		String apiEndPointForGetToken = connectorProperties.getProperty("apiUrl") + "/api/" +
-		                                connectorProperties.getProperty("apiVersion") + "/issue-token-intent";
+		                                connectorProperties.getProperty("apiVersion") +
+		                                "/issue-token-intent";
 		RestResponse<JSONObject> apiRestResponseFromGetToken =
 				sendJsonRestRequest(apiEndPointForGetToken, "POST", apiRequestHeadersMap, "getToken_mandatory.json");
 		String token = apiRestResponseFromGetToken.getBody().getString("token");
@@ -70,7 +75,8 @@ public class ActiveCollabConnectorIntegrationTest extends ConnectorIntegrationTe
 	 * @throws JSONException
 	 * @throws IOException
 	 */
-	@Test(enabled = true, description = "activecollab {createCategory} integration test with mandatory parameters.")
+	@Test(enabled = true, description = "activecollab {createCategory} integration test with " +
+	                                    "mandatory parameters.")
 	public void testCreateCategoryWithMandatoryParameters() throws IOException, JSONException {
 		esbRequestHeadersMap.put("Action", "urn:createCategory");
 
@@ -109,16 +115,17 @@ public class ActiveCollabConnectorIntegrationTest extends ConnectorIntegrationTe
 	 * @throws JSONException
 	 * @throws IOException
 	 */
-	@Test(enabled = true, description = "activecollab {listCategories} integration test with mandatory parameters.")
+	@Test(enabled = true, description = "activecollab {listCategories} integration test with " +
+	                                    "mandatory parameters.")
 	public void testListCategoriesWithMandatoryParameters() throws IOException, JSONException {
 		esbRequestHeadersMap.put("Action", "urn:listCategories");
 
 		RestResponse<JSONObject> esbRestResponse =
 				sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap, "listCategories_mandatory.json");
 
-		String apiEndPoint =
-				connectorProperties.getProperty("apiUrl") + "/api/" + connectorProperties.getProperty("apiVersion") +
-				"/projects/categories";
+		String apiEndPoint = connectorProperties.getProperty("apiUrl") + "/api/" +
+		                     connectorProperties.getProperty("apiVersion") +
+		                     "/projects/categories";
 		RestResponse<JSONObject> apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
 
 		Assert.assertEquals(esbRestResponse.getBody().toString(), apiRestResponse.getBody().toString());
@@ -172,7 +179,7 @@ public class ActiveCollabConnectorIntegrationTest extends ConnectorIntegrationTe
 	@Test(enabled = true, priority = 1, dependsOnMethods = { "testCreateCategoryWithMandatoryParameters",
 	                                                         "testRenameCategoryWithMandatoryParameters",
 	                                                         "testRenameCategoryWithNegativeCase" },
-			description = "activecollab {deleteCategory} integration test with mandatory  parameters.")
+			description = "activecollab {deleteCategory} integration test with mandatory  " + "parameters.")
 	public void testDeleteCategoryWithMandatoryParameters() throws IOException, JSONException {
 		esbRequestHeadersMap.put("Action", "urn:Category");
 
@@ -204,7 +211,7 @@ public class ActiveCollabConnectorIntegrationTest extends ConnectorIntegrationTe
 	 * @throws JSONException
 	 * @throws IOException
 	 */
-	@Test(enabled = true, description = "activecollab {createCompany} integration test with mandatory parameters.")
+	@Test(enabled = true, description = "activecollab {createCompany} integration test with " + "mandatory parameters.")
 	public void testCreateCompanyWithMandatoryParameters() throws IOException, JSONException {
 		esbRequestHeadersMap.put("Action", "urn:createCompany");
 
@@ -214,9 +221,9 @@ public class ActiveCollabConnectorIntegrationTest extends ConnectorIntegrationTe
 		String companyId = esbRestResponse.getBody().getJSONObject("single").getString("id");
 		connectorProperties.setProperty("companyId", companyId);
 
-		String apiEndPoint =
-				connectorProperties.getProperty("apiUrl") + "/api/" + connectorProperties.getProperty("apiVersion") +
-				"/companies/" + connectorProperties.getProperty("companyId");
+		String apiEndPoint = connectorProperties.getProperty("apiUrl") + "/api/" +
+		                     connectorProperties.getProperty("apiVersion") +
+		                     "/companies/" + connectorProperties.getProperty("companyId");
 		RestResponse<JSONObject> apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
 
 		Assert.assertEquals(esbRestResponse.getBody().getJSONObject("single").getString("name"),
@@ -233,7 +240,7 @@ public class ActiveCollabConnectorIntegrationTest extends ConnectorIntegrationTe
 	 * @throws JSONException
 	 * @throws IOException
 	 */
-	@Test(groups = { "wso2.esb" }, description = "activecollab {createCompany} integration test negative case.")
+	@Test(groups = { "wso2.esb" }, description = "activecollab {createCompany} integration test negative " + "case.")
 	public void testCreateCompanyWithNegativeCase() throws IOException, JSONException {
 		esbRequestHeadersMap.put("Action", "urn:createCompany");
 		RestResponse<JSONObject> esbRestResponse =
@@ -258,9 +265,9 @@ public class ActiveCollabConnectorIntegrationTest extends ConnectorIntegrationTe
 		RestResponse<JSONObject> esbRestResponse =
 				sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap, "getCompany_mandatory.json");
 
-		String apiEndPoint =
-				connectorProperties.getProperty("apiUrl") + "/api/" + connectorProperties.getProperty("apiVersion") +
-				"/companies/" + connectorProperties.getProperty("companyId");
+		String apiEndPoint = connectorProperties.getProperty("apiUrl") + "/api/" +
+		                     connectorProperties.getProperty("apiVersion") +
+		                     "/companies/" + connectorProperties.getProperty("companyId");
 		RestResponse<JSONObject> apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
 
 		Assert.assertEquals(esbRestResponse.getBody().toString(), apiRestResponse.getBody().toString());
@@ -290,16 +297,16 @@ public class ActiveCollabConnectorIntegrationTest extends ConnectorIntegrationTe
 	 * @throws JSONException
 	 * @throws IOException
 	 */
-	@Test(enabled = true, description = "activecollab {listCompanies} integration test with mandatory parameters.")
+	@Test(enabled = true, description = "activecollab {listCompanies} integration test with " + "mandatory parameters.")
 	public void testListCompaniesWithMandatoryParameters() throws IOException, JSONException {
 		esbRequestHeadersMap.put("Action", "urn:listCompanies");
 
 		RestResponse<JSONObject> esbRestResponse =
 				sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap, "listCompanies_mandatory.json");
 
-		String apiEndPoint =
-				connectorProperties.getProperty("apiUrl") + "/api/" + connectorProperties.getProperty("apiVersion") +
-				"/companies";
+		String apiEndPoint = connectorProperties.getProperty("apiUrl") + "/api/" +
+		                     connectorProperties.getProperty("apiVersion") +
+		                     "/companies";
 		RestResponse<JSONObject> apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
 
 		Assert.assertEquals(esbRestResponse.getBody().toString(), apiRestResponse.getBody().toString());
@@ -389,9 +396,9 @@ public class ActiveCollabConnectorIntegrationTest extends ConnectorIntegrationTe
 		RestResponse<JSONObject> esbRestResponse =
 				sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap, "getInvoice_mandatory.json");
 
-		String apiEndPoint =
-				connectorProperties.getProperty("apiUrl") + "/api/" + connectorProperties.getProperty("apiVersion") +
-				"/invoices/" + connectorProperties.getProperty("invoiceId");
+		String apiEndPoint = connectorProperties.getProperty("apiUrl") + "/api/" +
+		                     connectorProperties.getProperty("apiVersion") +
+		                     "/invoices/" + connectorProperties.getProperty("invoiceId");
 		RestResponse<JSONObject> apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
 
 		Assert.assertEquals(esbRestResponse.getBody().toString(), apiRestResponse.getBody().toString());
@@ -420,16 +427,16 @@ public class ActiveCollabConnectorIntegrationTest extends ConnectorIntegrationTe
 	 * @throws JSONException
 	 * @throws IOException
 	 */
-	@Test(enabled = true, description = "activecollab {listInvoices} integration test with mandatory parameters.")
+	@Test(enabled = true, description = "activecollab {listInvoices} integration test with " + "mandatory parameters.")
 	public void testListInvoicesWithMandatoryParameters() throws IOException, JSONException {
 		esbRequestHeadersMap.put("Action", "urn:listInvoices");
 
 		RestResponse<JSONObject> esbRestResponse =
 				sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap, "listInvoices_mandatory.json");
 
-		String apiEndPoint =
-				connectorProperties.getProperty("apiUrl") + "/api/" + connectorProperties.getProperty("apiVersion") +
-				"/invoices";
+		String apiEndPoint = connectorProperties.getProperty("apiUrl") + "/api/" +
+		                     connectorProperties.getProperty("apiVersion") +
+		                     "/invoices";
 		RestResponse<JSONObject> apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
 
 		Assert.assertEquals(esbRestResponse.getBody().toString(), apiRestResponse.getBody().toString());
@@ -548,7 +555,7 @@ public class ActiveCollabConnectorIntegrationTest extends ConnectorIntegrationTe
 	 * @throws JSONException
 	 * @throws IOException
 	 */
-	@Test(groups = { "wso2.esb" }, description = "activecollab {exportInvoice} integration test negative case.")
+	@Test(groups = { "wso2.esb" }, description = "activecollab {exportInvoice} integration test negative " + "case.")
 	public void testExportInvoiceWithNegativeCase() throws IOException, JSONException {
 		esbRequestHeadersMap.put("Action", "urn:exportInvoice");
 		RestResponse<JSONObject> esbRestResponse =
@@ -630,16 +637,16 @@ public class ActiveCollabConnectorIntegrationTest extends ConnectorIntegrationTe
 	 * @throws JSONException
 	 * @throws IOException
 	 */
-	@Test(enabled = true, description = "activecollab {getAllUsers} integration test with mandatory parameters.")
+	@Test(enabled = true, description = "activecollab {getAllUsers} integration test with " + "mandatory parameters.")
 	public void testGetAllUsersWithMandatoryParameters() throws IOException, JSONException {
 		esbRequestHeadersMap.put("Action", "urn:getAllUsers");
 
 		RestResponse<JSONObject> esbRestResponse =
 				sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap, "getAllUsers_mandatory.json");
 
-		String apiEndPoint =
-				connectorProperties.getProperty("apiUrl") + "/api/" + connectorProperties.getProperty("apiVersion") +
-				"/users/all";
+		String apiEndPoint = connectorProperties.getProperty("apiUrl") + "/api/" +
+		                     connectorProperties.getProperty("apiVersion") +
+		                     "/users/all";
 		RestResponse<JSONObject> apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
 
 		Assert.assertEquals(esbRestResponse.getBody().toString(), apiRestResponse.getBody().toString());
@@ -653,16 +660,16 @@ public class ActiveCollabConnectorIntegrationTest extends ConnectorIntegrationTe
 	 * @throws JSONException
 	 * @throws IOException
 	 */
-	@Test(enabled = true, description = "activecollab {listUsers} integration test with mandatory parameters.")
+	@Test(enabled = true, description = "activecollab {listUsers} integration test with " + "mandatory parameters.")
 	public void testListUsersWithMandatoryParameters() throws IOException, JSONException {
 		esbRequestHeadersMap.put("Action", "urn:listUsers");
 
 		RestResponse<JSONObject> esbRestResponse =
 				sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap, "listUsers_mandatory.json");
 
-		String apiEndPoint =
-				connectorProperties.getProperty("apiUrl") + "/api/" + connectorProperties.getProperty("apiVersion") +
-				"/users";
+		String apiEndPoint = connectorProperties.getProperty("apiUrl") + "/api/" +
+		                     connectorProperties.getProperty("apiVersion") +
+		                     "/users";
 		RestResponse<JSONObject> apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
 
 		Assert.assertEquals(esbRestResponse.getBody().toString(), apiRestResponse.getBody().toString());
@@ -684,9 +691,9 @@ public class ActiveCollabConnectorIntegrationTest extends ConnectorIntegrationTe
 		RestResponse<JSONObject> esbRestResponse =
 				sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap, "getUser_mandatory.json");
 
-		String apiEndPoint =
-				connectorProperties.getProperty("apiUrl") + "/api/" + connectorProperties.getProperty("apiVersion") +
-				"/users/" + connectorProperties.getProperty("userId");
+		String apiEndPoint = connectorProperties.getProperty("apiUrl") + "/api/" +
+		                     connectorProperties.getProperty("apiVersion") +
+		                     "/users/" + connectorProperties.getProperty("userId");
 		RestResponse<JSONObject> apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
 
 		Assert.assertEquals(esbRestResponse.getBody().toString(), apiRestResponse.getBody().toString());
@@ -754,7 +761,7 @@ public class ActiveCollabConnectorIntegrationTest extends ConnectorIntegrationTe
 	 */
 	@Test(enabled = true, priority = 2, dependsOnMethods = { "testCreateUserWithMandatoryParameters",
 	                                                         "testDeleteUserWithMandatoryParameters" },
-			description = "activecollab {reactivateUser} integration test with mandatory  parameters.")
+			description = "activecollab {reactivateUser} integration test with mandatory  " + "parameters.")
 	public void testReactivateUserWithMandatoryParameters() throws IOException, JSONException {
 		esbRequestHeadersMap.put("Action", "urn:reactivateUser");
 
@@ -773,7 +780,7 @@ public class ActiveCollabConnectorIntegrationTest extends ConnectorIntegrationTe
 	 * @throws JSONException
 	 * @throws IOException
 	 */
-	@Test(groups = { "wso2.esb" }, description = "activecollab {reactivateUser} integration test negative case.")
+	@Test(groups = { "wso2.esb" }, description = "activecollab {reactivateUser} integration test negative " + "case.")
 	public void testReactivateUserWithNegativeCase() throws IOException, JSONException {
 		esbRequestHeadersMap.put("Action", "urn:reactivateUser");
 		RestResponse<JSONObject> esbRestResponse =
@@ -788,7 +795,8 @@ public class ActiveCollabConnectorIntegrationTest extends ConnectorIntegrationTe
 	 * @throws JSONException
 	 * @throws IOException
 	 */
-	@Test(enabled = true, description = "activecollab {createProject} integration test with mandatory  parameters.")
+	@Test(enabled = true, description = "activecollab {createProject} integration test with " +
+	                                    "mandatory  parameters.")
 	public void testCreateProjectWithMandatoryParameters() throws IOException, JSONException {
 		esbRequestHeadersMap.put("Action", "urn:createProject");
 
@@ -838,7 +846,7 @@ public class ActiveCollabConnectorIntegrationTest extends ConnectorIntegrationTe
 	 * @throws JSONException
 	 * @throws IOException
 	 */
-	@Test(groups = { "wso2.esb" }, description = "activecollab {createProject} integration test negative case.")
+	@Test(groups = { "wso2.esb" }, description = "activecollab {createProject} integration test negative " + "case.")
 	public void testCreateProjectWithNegativeCase() throws IOException, JSONException {
 		esbRequestHeadersMap.put("Action", "urn:createProject");
 		RestResponse<JSONObject> esbRestResponse =
@@ -863,9 +871,9 @@ public class ActiveCollabConnectorIntegrationTest extends ConnectorIntegrationTe
 		RestResponse<JSONObject> esbRestResponse =
 				sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap, "getProject_mandatory.json");
 
-		String apiEndPoint =
-				connectorProperties.getProperty("apiUrl") + "/api/" + connectorProperties.getProperty("apiVersion") +
-				"/projects/" + connectorProperties.getProperty("projectId");
+		String apiEndPoint = connectorProperties.getProperty("apiUrl") + "/api/" +
+		                     connectorProperties.getProperty("apiVersion") +
+		                     "/projects/" + connectorProperties.getProperty("projectId");
 		RestResponse<JSONObject> apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
 
 		Assert.assertEquals(esbRestResponse.getBody().toString(), apiRestResponse.getBody().toString());
@@ -903,9 +911,9 @@ public class ActiveCollabConnectorIntegrationTest extends ConnectorIntegrationTe
 		RestResponse<JSONObject> esbRestResponse =
 				sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap, "listProjects_mandatory.json");
 
-		String apiEndPoint =
-				connectorProperties.getProperty("apiUrl") + "/api/" + connectorProperties.getProperty("apiVersion") +
-				"/projects";
+		String apiEndPoint = connectorProperties.getProperty("apiUrl") + "/api/" +
+		                     connectorProperties.getProperty("apiVersion") +
+		                     "/projects";
 		RestResponse<JSONObject> apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
 
 		Assert.assertEquals(esbRestResponse.getBody().toString(), apiRestResponse.getBody().toString());
@@ -921,16 +929,16 @@ public class ActiveCollabConnectorIntegrationTest extends ConnectorIntegrationTe
 	 */
 	@Test(enabled = true, dependsOnMethods = { "testCreateProjectWithMandatoryParameters",
 	                                           "testCreateProjectWithOptionalParameters" },
-			description = "activecollab {listProjectNames} integration test with mandatory parameters.")
+			description = "activecollab {listProjectNames} integration test with mandatory " + "parameters.")
 	public void testListProjectNamesWithMandatoryParameters() throws IOException, JSONException {
 		esbRequestHeadersMap.put("Action", "urn:listProjectNames");
 
 		RestResponse<JSONObject> esbRestResponse =
 				sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap, "listProjectNames_mandatory.json");
 
-		String apiEndPoint =
-				connectorProperties.getProperty("apiUrl") + "/api/" + connectorProperties.getProperty("apiVersion") +
-				"/projects/names";
+		String apiEndPoint = connectorProperties.getProperty("apiUrl") + "/api/" +
+		                     connectorProperties.getProperty("apiVersion") +
+		                     "/projects/names";
 		RestResponse<JSONObject> apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
 
 		Assert.assertEquals(esbRestResponse.getBody().toString(), apiRestResponse.getBody().toString());
@@ -945,16 +953,16 @@ public class ActiveCollabConnectorIntegrationTest extends ConnectorIntegrationTe
 	 * @throws IOException
 	 */
 	@Test(enabled = true, dependsOnMethods = { "testCompleteProjectWithMandatoryParameters" },
-			description = "activecollab {listCompletedProjects} integration test with mandatory parameters.")
+			description = "activecollab {listCompletedProjects} integration test with mandatory " + "parameters.")
 	public void testListCompletedProjectsWithMandatoryParameters() throws IOException, JSONException {
 		esbRequestHeadersMap.put("Action", "urn:listCompletedProjects");
 
 		RestResponse<JSONObject> esbRestResponse =
 				sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap, "listCompletedProjects_mandatory.json");
 
-		String apiEndPoint =
-				connectorProperties.getProperty("apiUrl") + "/api/" + connectorProperties.getProperty("apiVersion") +
-				"/projects/archive";
+		String apiEndPoint = connectorProperties.getProperty("apiUrl") + "/api/" +
+		                     connectorProperties.getProperty("apiVersion") +
+		                     "/projects/archive";
 		RestResponse<JSONObject> apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
 
 		Assert.assertEquals(esbRestResponse.getBody().toString(), apiRestResponse.getBody().toString());
@@ -970,7 +978,7 @@ public class ActiveCollabConnectorIntegrationTest extends ConnectorIntegrationTe
 	 */
 	@Test(enabled = true, dependsOnMethods = { "testCreateProjectWithMandatoryParameters",
 	                                           "testRenameProjectWithMandatoryParameters" },
-			description = "activecollab {completeProject} integration test with mandatory  parameters.")
+			description = "activecollab {completeProject} integration test with mandatory  " + "parameters.")
 	public void testCompleteProjectWithMandatoryParameters() throws IOException, JSONException {
 		esbRequestHeadersMap.put("Action", "urn:completeProject");
 
@@ -991,7 +999,7 @@ public class ActiveCollabConnectorIntegrationTest extends ConnectorIntegrationTe
 	 * @throws JSONException
 	 * @throws IOException
 	 */
-	@Test(groups = { "wso2.esb" }, description = "activecollab {completeProject} integration test negative case.")
+	@Test(groups = { "wso2.esb" }, description = "activecollab {completeProject} integration test negative " + "case.")
 	public void testCompleteProjectWithNegativeCase() throws IOException, JSONException {
 		esbRequestHeadersMap.put("Action", "urn:completeProject");
 		RestResponse<JSONObject> esbRestResponse =
@@ -1014,9 +1022,9 @@ public class ActiveCollabConnectorIntegrationTest extends ConnectorIntegrationTe
 		RestResponse<JSONObject> esbRestResponse =
 				sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap, "renameProject_mandatory.json");
 
-		String apiEndPoint =
-				connectorProperties.getProperty("apiUrl") + "/api/" + connectorProperties.getProperty("apiVersion") +
-				"/projects/" + connectorProperties.getProperty("projectId");
+		String apiEndPoint = connectorProperties.getProperty("apiUrl") + "/api/" +
+		                     connectorProperties.getProperty("apiVersion") +
+		                     "/projects/" + connectorProperties.getProperty("projectId");
 		RestResponse<JSONObject> apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
 
 		Assert.assertEquals(esbRestResponse.getBody().getJSONObject("single").getString("name"),
@@ -1032,7 +1040,7 @@ public class ActiveCollabConnectorIntegrationTest extends ConnectorIntegrationTe
 	 * @throws JSONException
 	 * @throws IOException
 	 */
-	@Test(groups = { "wso2.esb" }, description = "activecollab {renameProject} integration test negative case.")
+	@Test(groups = { "wso2.esb" }, description = "activecollab {renameProject} integration test negative " + "case.")
 	public void testRenameProjectWithNegativeCase() throws IOException, JSONException {
 		esbRequestHeadersMap.put("Action", "urn:renameProject");
 		RestResponse<JSONObject> esbRestResponse =
@@ -1049,16 +1057,17 @@ public class ActiveCollabConnectorIntegrationTest extends ConnectorIntegrationTe
 	 * @throws JSONException
 	 * @throws IOException
 	 */
-	@Test(enabled = true, description = "activecollab {listCurrencies} integration test with mandatory parameters.")
+	@Test(enabled = true, description = "activecollab {listCurrencies} integration test with " +
+	                                    "mandatory parameters.")
 	public void testListCurrenciesWithMandatoryParameters() throws IOException, JSONException {
 		esbRequestHeadersMap.put("Action", "urn:listCurrencies");
 
 		RestResponse<JSONObject> esbRestResponse =
 				sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap, "listCurrencies_mandatory.json");
 
-		String apiEndPoint =
-				connectorProperties.getProperty("apiUrl") + "/api/" + connectorProperties.getProperty("apiVersion") +
-				"/currencies";
+		String apiEndPoint = connectorProperties.getProperty("apiUrl") + "/api/" +
+		                     connectorProperties.getProperty("apiVersion") +
+		                     "/currencies";
 		RestResponse<JSONObject> apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
 
 		Assert.assertEquals(esbRestResponse.getBody().toString(), apiRestResponse.getBody().toString());
@@ -1147,10 +1156,11 @@ public class ActiveCollabConnectorIntegrationTest extends ConnectorIntegrationTe
 		RestResponse<JSONObject> esbRestResponse =
 				sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap, "getTask_mandatory.json");
 
-		String apiEndPoint =
-				connectorProperties.getProperty("apiUrl") + "/api/" + connectorProperties.getProperty("apiVersion") +
-				"/projects/" + connectorProperties.getProperty("projectId") + "/tasks/" +
-				connectorProperties.getProperty("taskId");
+		String apiEndPoint = connectorProperties.getProperty("apiUrl") + "/api/" +
+		                     connectorProperties.getProperty("apiVersion") +
+		                     "/projects/" + connectorProperties.getProperty("projectId") +
+		                     "/tasks/" +
+		                     connectorProperties.getProperty("taskId");
 		RestResponse<JSONObject> apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
 
 		Assert.assertEquals(esbRestResponse.getBody().toString(), apiRestResponse.getBody().toString());
@@ -1189,9 +1199,9 @@ public class ActiveCollabConnectorIntegrationTest extends ConnectorIntegrationTe
 		RestResponse<JSONObject> esbRestResponse =
 				sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap, "listTasks_mandatory.json");
 
-		String apiEndPoint =
-				connectorProperties.getProperty("apiUrl") + "/api/" + connectorProperties.getProperty("apiVersion") +
-				"/projects/" + connectorProperties.getProperty("projectId") + "/tasks";
+		String apiEndPoint = connectorProperties.getProperty("apiUrl") + "/api/" +
+		                     connectorProperties.getProperty("apiVersion") +
+		                     "/projects/" + connectorProperties.getProperty("projectId") + "/tasks";
 		RestResponse<JSONObject> apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
 
 		Assert.assertEquals(esbRestResponse.getBody().toString(), apiRestResponse.getBody().toString());
@@ -1335,7 +1345,7 @@ public class ActiveCollabConnectorIntegrationTest extends ConnectorIntegrationTe
 	 * @throws JSONException
 	 * @throws IOException
 	 */
-	@Test(groups = { "wso2.esb" }, description = "activecollab {createSubTask} integration test negative case.")
+	@Test(groups = { "wso2.esb" }, description = "activecollab {createSubTask} integration test negative " + "case.")
 	public void testCreateSubTaskWithNegativeCase() throws IOException, JSONException {
 		esbRequestHeadersMap.put("Action", "urn:createSubTask");
 		RestResponse<JSONObject> esbRestResponse =
@@ -1354,7 +1364,7 @@ public class ActiveCollabConnectorIntegrationTest extends ConnectorIntegrationTe
 	 */
 	@Test(enabled = true, dependsOnMethods = { "testCreateProjectWithMandatoryParameters",
 	                                           "testCreateTaskWithMandatoryParameters" },
-			description = "activecollab {promoteSubTaskToTask} integration test with mandatory parameters.")
+			description = "activecollab {promoteSubTaskToTask} integration test with mandatory " + "parameters.")
 	public void testPromoteSubTaskToTaskWithMandatoryParameters() throws IOException, JSONException {
 		esbRequestHeadersMap.put("Action", "urn:promoteSubTaskToTask");
 
@@ -1377,7 +1387,8 @@ public class ActiveCollabConnectorIntegrationTest extends ConnectorIntegrationTe
 	 * @throws JSONException
 	 * @throws IOException
 	 */
-	@Test(groups = { "wso2.esb" }, description = "activecollab {promoteSubTaskToTask} integration test negative case.")
+	@Test(groups = { "wso2.esb" }, description = "activecollab {promoteSubTaskToTask} integration test " +
+	                                             "negative case.")
 	public void testPromoteSubTaskToTaskWithNegativeCase() throws IOException, JSONException {
 		esbRequestHeadersMap.put("Action", "urn:promoteSubTaskToTask");
 		RestResponse<JSONObject> esbRestResponse =
@@ -1415,7 +1426,7 @@ public class ActiveCollabConnectorIntegrationTest extends ConnectorIntegrationTe
 	 * @throws JSONException
 	 * @throws IOException
 	 */
-	@Test(groups = { "wso2.esb" }, description = "activecollab {completeTask} integration test negative case.")
+	@Test(groups = { "wso2.esb" }, description = "activecollab {completeTask} integration test negative" + " case.")
 	public void testCompleteTaskWithNegativeCase() throws IOException, JSONException {
 		esbRequestHeadersMap.put("Action", "urn:completeTask");
 		RestResponse<JSONObject> esbRestResponse =
@@ -1450,7 +1461,7 @@ public class ActiveCollabConnectorIntegrationTest extends ConnectorIntegrationTe
 	 * @throws JSONException
 	 * @throws IOException
 	 */
-	@Test(groups = { "wso2.esb" }, description = "activecollab {deleteCategory} integration test negative case.")
+	@Test(groups = { "wso2.esb" }, description = "activecollab {deleteCategory} integration test negative " + "case.")
 	public void testDeleteTaskWithNegativeCase() throws IOException, JSONException {
 		esbRequestHeadersMap.put("Action", "urn:deleteTask");
 		RestResponse<JSONObject> esbRestResponse =
