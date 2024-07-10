@@ -4,7 +4,7 @@
     "category": "Issue Tracking and Project Management",
     "documentationUrl": "https://docs.wso2.com/display/ESBCONNECTORS/ActiveCollab+Connector",
     "description": "The ActiveCollab connector allows you to access the ActiveCollab REST API through WSO2 ESB. ActiveCollab is a project management and collaboration tool that helps people remain organized as they work on one or many projects. Apart from project management and collaboration, users can also perform invoicing functions that are integrated with the software. The ActiveCollab application is also aimed at proactive project management and eliminating reactionary approaches to collaborate and manage projects.",
-    "status": "Unsupported",
+    "status": "Active",
     "labels": [
         "connector"
     ],
